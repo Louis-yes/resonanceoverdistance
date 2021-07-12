@@ -7,10 +7,30 @@
     <title>Seeking resonance over distance</title>
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     <style>
+        /*
+            Variables
+        */
+        :root {
+            --menu-scale: 100;
+        }
+        /*
+            main
+        */
+        ul {
+            max-width: 450px;
+        }
         img {
             max-width: 100%;
         }
+        /*
+            Menu
+        */
+        .no-scroll {
+            /* overflow: hidden; */
+        }
         #about {
+            pointer-events: none;
+            position: fixed;
             top: 0;
             right: 0;
             width: 100%;
@@ -18,6 +38,7 @@
             overflow: hidden;
         }
         #about-bg {
+            z-index: 0;
             position: absolute;
             top: 20px;
             right: 20px;
@@ -27,16 +48,73 @@
             width: 20px;
             transform-origin: center;
             transform: scale(1);
-            transition: transform .2s ease-out;
+            transition: transform .3s ease-out;
+        }
+        #about-toggle {
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 0;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #fff;
+            border-radius: 50%;
+            height: 20px;
+            width: 20px;
+            opacity: 0;
+            transform-origin: center;
+            transition: opacity .3s ease-out;
+        }
+        #about-toggle:focus {
+            outline: none;
+        }
+        .keyboard #about-toggle:focus {
+            /* background-color: rgba(0,0,0,0); */
+            opacity: 1;
+            border: 1px dashed #000;
+            animation: spin 3s linear infinite;
         }
 
-        .closed #about-bg {
-            transform: scale(100);
+        @keyframes spin {
+            from { 
+                transform: rotate(0);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #about-content {
+            pointer-events: none;
+            z-index: 2;
+            max-width: 450px;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%,0);
+            opacity: 0;
+            transition: opacity .1s;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 2em;
+            line-height: 1.5;
+        }
+
+        .open #about-content {
+            pointer-events: auto;
+            opacity: 1;
+            transition: opacity .3s .3s;
+        }
+        .open #about-toggle {
+            opacity: 1;
+        }
+        #about.open {
+        }
+        .open #about-bg {
+            transform: scale(var(--menu-scale));
         }
     </style>
 </head>
 <body>
-    <ul class="list mw6 center pa0">
+    <ul class="list center pa0 mt0">
         <li><img src="pages/01.jpg" alt=""></li>
         <li><img src="pages/02.jpg" alt=""></li>
         <li><img src="pages/03.jpg" alt=""></li>
@@ -46,17 +124,69 @@
         <li><img src="pages/07.jpg" alt=""></li>
         <li><img src="pages/08.jpg" alt=""></li>
     </ul>
-    <article id="about" class="absolute" onclick="toggleAbout()">
-        <div id="about-bg" href="#about"  class="absolute bg-red br-50"></div>
+    <article id="about" class="absolute">
+        <div id="about-bg"  class="absolute bg-red br-50"></div>
+        <div id="about-content" class="white f4 pa5 center w-100">
+            adfaiduf alsdjb alkdjsflkajsdbf lkajsd
+        </div>
+        <div id="about-toggle" tabindex="1" class="absolute bg-red br-50"></div>
     </article>
 
     <script>
-        function toggleAbout(){
-            console.time("gonk");
-            const about = document.querySelector("#about");
-            about.classList.toggle("closed")
-            console.timeEnd("gonk");
+        function debounce(func, timeout = 300){
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
         }
+    
+        function setupMenuAnimations(){
+            const aboutBg = document.querySelector("#about-bg");
+            const style = document.createElement("style");
+            function biggest (w,h) {
+                return w > h ? w : h;
+            }
+            function setVariable (style) {
+                let w = window.innerWidth;
+                let h = window.innerHeight;
+                style.innerHTML = `
+                :root { 
+                    --menu-scale: ${3 * (biggest(w,h) / aboutBg.clientWidth)}
+                }`;
+            }
+            const resizeReset = debounce(() => setVariable(style));
+            window.addEventListener("resize", resizeReset)
+            setVariable(style);
+            document.head.appendChild(style);
+        }
+
+        function setupInteractions() {
+            const toggle = document.querySelector("#about-toggle")
+            toggle.addEventListener("click", function () {
+                toggleAbout();
+            })
+            toggle.addEventListener("keydown", function (e) {
+                if (e.keyCode == 13) {
+                    toggleAbout();
+                }
+            })
+            window.addEventListener("keydown", () => {
+                document.body.classList.add("keyboard");
+            });
+            window.addEventListener("mousemove", () => {
+                document.body.classList.remove("keyboard");
+            })
+        }
+
+        function toggleAbout(){
+            const about = document.querySelector("#about");
+            about.classList.toggle("open")
+            document.body.classList.toggle("no-scroll")
+        }
+
+        setupInteractions();
+        setupMenuAnimations();
     </script>
 </body>
 </html>

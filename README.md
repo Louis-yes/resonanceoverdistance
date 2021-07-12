@@ -1,1 +1,1 @@
-# resonanceoverdistance
+# seeking resonance over distance

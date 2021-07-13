@@ -7,73 +7,98 @@
     <title>Seeking resonance over distance</title>
     <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
     <style>
-        /*
-            Variables
-        */
+        /* Variables */
         :root {
             --menu-scale: 100;
+            --c1: #d63d44;
         }
-        /*
-            main
-        */
-        ul {
-            max-width: 450px;
-        }
-        img {
-            max-width: 100%;
-        }
-        /*
-            Menu
-        */
-        .no-scroll {
-            /* overflow: hidden; */
-        }
+        
+        /* Main */
+        ul { max-width: 450px; }
+        img { max-width: 100%; }
+        .no-scroll { overflow: hidden; }
+       
+        /* Menu */
         #about {
-            pointer-events: none;
             position: fixed;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
+            top: 0; right: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            pointer-events: none;
         }
+        
         #about-bg {
             z-index: 0;
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #d63d44;
+            top: 20px; right: 20px;
+            height: 20px; width: 20px;
+
             border-radius: 50%;
-            height: 20px;
-            width: 20px;
+
+            background-color: var(--c1);
+
             transform-origin: center;
             transform: scale(1);
             transition: transform .3s ease-out;
         }
+        
         #about-toggle {
-            pointer-events: auto;
-            cursor: pointer;
             z-index: 3;
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background-color: #fff;
+            height: 40px; width: 40px;
+            top: 10px; right: 10px;
+
             border-radius: 50%;
-            height: 20px;
-            width: 20px;
+            border: 5px solid var(--c1);
+
+            cursor: pointer;
+            pointer-events: auto;
+            
+            background-color: #fff;
             opacity: 0;
-            transform-origin: center;
+
             transition: opacity .3s ease-out;
         }
-        #about-toggle:focus {
-            outline: none;
-        }
+        
+        #about-toggle:focus { outline: none; }
+
         .keyboard #about-toggle:focus {
-            /* background-color: rgba(0,0,0,0); */
             opacity: 1;
             border: 1px dashed #000;
             animation: spin 3s linear infinite;
         }
+
+        #about-content {
+            z-index: 2;
+            position: absolute;
+            height: 100%; width: 100%;
+            left: 50%;
+            transform: translate(-50%,0);
+            overflow: auto;
+            pointer-events: none;
+
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 1.3em;
+            line-height: 1.5;
+
+            opacity: 0;
+            transition: opacity .1s;
+        }
+
+        #about-content > .wrapper {
+            padding: 2em;
+            margin: 0 auto;
+            max-width: 500px;
+        }
+
+        .open #about-content {
+            pointer-events: auto;
+            opacity: 1;
+            transition: opacity .3s .3s;
+        }
+        .open #about-toggle { opacity: 1; }
+        .open #about-bg { transform: scale(var(--menu-scale)); }
 
         @keyframes spin {
             from { 
@@ -82,43 +107,6 @@
             to {
                 transform: rotate(360deg);
             }
-        }
-
-        #about-content {
-            color: #fff;
-            pointer-events: none;
-            z-index: 2;
-            position: absolute;
-            left: 50%;
-            height: 100%;
-            width: 100%;
-            transform: translate(-50%,0);
-            opacity: 0;
-            transition: opacity .1s;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 1.3em;
-            line-height: 1.5;
-            overflow: auto;
-        }
-
-        #about-content > .wrapper {
-            max-width: 500px;
-            padding: 2em;
-            margin: 0 auto;
-        }
-
-        .open #about-content {
-            pointer-events: auto;
-            opacity: 1;
-            transition: opacity .3s .3s;
-        }
-        .open #about-toggle {
-            opacity: 1;
-        }
-        #about.open {
-        }
-        .open #about-bg {
-            transform: scale(var(--menu-scale));
         }
     </style>
 </head>
@@ -147,10 +135,11 @@
                     Important questions. 
                 </p>
                 <label for="references">The media snippets featured are, in order of appearance:</label>
-                <ul id="references">
-                    <li>1 - The final words of Ways of Seeing, episode 1,</li>
-                    <li>2 - The Argentinian commentary on the famous 1986 "Hand of God" goal scored by Maradona against England</li>
-                </ul>    
+                <ol id="references">
+                    <li><a href="https://youtu.be/0pDE4VX_9Kk?t=1747">The final words of BBC's Ways of Seeing - Episode 1.</a><sup>[Berger, J., Dibb, M., & BBC Enterprises. (1972). Ways of seeing. London: BBC Enterprises.]</sup>
+                    </li>
+                    <li>The Argentinian commentary on the famous 1986 "Hand of God" goal scored by Maradona against England</li>
+                </ol>    
             </div>
         </div>
         <div id="about-toggle" tabindex="1" class="absolute bg-red br-50"></div>
@@ -168,45 +157,40 @@
         function setupMenuAnimations(){
             const aboutBg = document.querySelector("#about-bg");
             const style = document.createElement("style");
-            function biggest (w,h) {
-                return w > h ? w : h;
-            }
+            
+            function biggest (w,h) { return w > h ? w : h; }
+
             function setVariable (style) {
                 let w = window.innerWidth;
                 let h = window.innerHeight;
                 style.innerHTML = `
-                :root { 
-                    --menu-scale: ${3 * (biggest(w,h) / aboutBg.clientWidth)}
-                }`;
+                :root { --menu-scale: ${3 * (biggest(w,h) / aboutBg.clientWidth)} }`;
             }
-            const resizeReset = debounce(() => setVariable(style));
-            window.addEventListener("resize", resizeReset)
+
+            window.addEventListener("resize", () => { debounce(() => setVariable(style))});
+
             setVariable(style);
             document.head.appendChild(style);
         }
 
         function setupInteractions() {
             const toggle = document.querySelector("#about-toggle")
-            toggle.addEventListener("click", function () {
-                toggleAbout();
-            })
-            toggle.addEventListener("keydown", function (e) {
-                if (e.keyCode == 13) {
-                    toggleAbout();
-                }
+            toggle.addEventListener("click", toggleAbout);
+            toggle.addEventListener("keydown", (e) => {
+                if (e.keyCode == 13) toggleAbout();
             })
             window.addEventListener("keydown", () => {
                 document.body.classList.add("keyboard");
             });
-            window.addEventListener("mousemove", () => {
+            window.addEventListener("click", () => {
                 document.body.classList.remove("keyboard");
             })
         }
 
         function toggleAbout(){
             const about = document.querySelector("#about");
-            about.classList.toggle("open")
-            document.body.classList.toggle("no-scroll")
+            about.classList.toggle("open");
+            document.body.classList.toggle("no-scroll");
         }
 
         setupInteractions();

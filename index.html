@@ -35,7 +35,7 @@
             right: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
+            overflow: auto;
         }
         #about-bg {
             z-index: 0;
@@ -53,7 +53,7 @@
         #about-toggle {
             pointer-events: auto;
             cursor: pointer;
-            z-index: 0;
+            z-index: 3;
             position: absolute;
             top: 20px;
             right: 20px;
@@ -85,17 +85,26 @@
         }
 
         #about-content {
+            color: #fff;
             pointer-events: none;
             z-index: 2;
-            max-width: 450px;
             position: absolute;
             left: 50%;
+            height: 100%;
+            width: 100%;
             transform: translate(-50%,0);
             opacity: 0;
             transition: opacity .1s;
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 2em;
+            font-size: 1.3em;
             line-height: 1.5;
+            overflow: auto;
+        }
+
+        #about-content > .wrapper {
+            max-width: 500px;
+            padding: 2em;
+            margin: 0 auto;
         }
 
         .open #about-content {
@@ -126,8 +135,23 @@
     </ul>
     <article id="about" class="absolute">
         <div id="about-bg"  class="absolute bg-red br-50"></div>
-        <div id="about-content" class="white f4 pa5 center w-100">
-            adfaiduf alsdjb alkdjsflkajsdbf lkajsd
+        <div id="about-content">
+            <div class="wrapper">
+                <p>
+                    <em>Seeking Resonance Over Distance</em> is an idea I couldn't get out of my head, and a felt tip pen homage to imagination, bright colours and televised media.
+                </p>
+                <p>
+                    Why do the teletubb*es have screens in their bellies? <br> From where do they receive the transmissions? <br> Who curates it? <br>To what end?<br> 
+                </p>
+                <p>
+                    Important questions. 
+                </p>
+                <label for="references">The media snippets featured are, in order of appearance:</label>
+                <ul id="references">
+                    <li>1 - The final words of Ways of Seeing, episode 1,</li>
+                    <li>2 - The Argentinian commentary on the famous 1986 "Hand of God" goal scored by Maradona against England</li>
+                </ul>    
+            </div>
         </div>
         <div id="about-toggle" tabindex="1" class="absolute bg-red br-50"></div>
     </article>

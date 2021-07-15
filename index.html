@@ -100,6 +100,20 @@
         .open #about-toggle { opacity: 1; }
         .open #about-bg { transform: scale(var(--menu-scale)); }
 
+        #references a {
+            color: #fff;
+        }
+        #references a:visited {
+            color: #fff;
+        }
+
+        #references sup {
+            line-height: 1.2;
+            display: inline-block;
+            margin: 10px 0;
+            opacity: .7;
+        }
+
         @keyframes spin {
             from { 
                 transform: rotate(0);
@@ -136,9 +150,14 @@
                 </p>
                 <label for="references">The media snippets featured are, in order of appearance:</label>
                 <ol id="references">
-                    <li><a href="https://youtu.be/0pDE4VX_9Kk?t=1747">The final words of BBC's Ways of Seeing - Episode 1.</a><sup>[Berger, J., Dibb, M., & BBC Enterprises. (1972). Ways of seeing. London: BBC Enterprises.]</sup>
+                    <li>
+                        <a href="https://youtu.be/0pDE4VX_9Kk?t=1747">The final words of BBC's Ways of Seeing - Episode 1.</a>
+                        <sup>[Berger, J., Dibb, M., & BBC Enterprises. (1972). Ways of seeing. London: BBC Enterprises.]</sup>
                     </li>
-                    <li>The Argentinian commentary on the famous 1986 "Hand of God" goal scored by Maradona against England</li>
+                    <li>
+                        <a href="https://www.youtube.com/watch?v=1wVho3I0NtU">The spanish language commentary by Victor Hugo Morales on the famous 1986 "Goal of the Century" goal scored by Maradona against England</a>
+                        <sup>[Morales, V. (1986). Argentina v England (1986 FIFA World Cup), Estadio Azteca in Mexico City Quarter Final]</sup>
+                    </li>
                 </ol>    
             </div>
         </div>
